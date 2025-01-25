@@ -10,11 +10,7 @@ class HomeBottombar extends ConsumerWidget {
 
     final buttonWidth = MediaQuery.of(context).size.width * 0.2;
 
-
-
-
-    return Container(
-      color: Colors.transparent,
+    return SizedBox(
       height: 75,
       width: double.infinity,
       child: Row(
@@ -42,7 +38,7 @@ class CenterButton extends ConsumerWidget {
     
     return GestureDetector(
       onTap: () async {
-        final DateTime? new_date = await showDatePicker(
+        final DateTime? newDate = await showDatePicker(
           context: context,
           firstDate: currentDate.add(Duration(days: -365)),
           initialDate: currentDate,
@@ -50,8 +46,8 @@ class CenterButton extends ConsumerWidget {
 
         );
 
-        if(new_date != null){
-          ref.read(currentDateProvider.notifier).state = new_date;
+        if(newDate != null){
+          ref.read(currentDateProvider.notifier).state = newDate;
         }
       },
       child: Container(
