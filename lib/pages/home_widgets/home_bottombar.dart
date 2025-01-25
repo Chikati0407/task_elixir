@@ -14,6 +14,7 @@ class HomeBottombar extends ConsumerWidget {
 
 
     return Container(
+      color: Colors.transparent,
       height: 75,
       width: double.infinity,
       child: Row(
@@ -43,9 +44,10 @@ class CenterButton extends ConsumerWidget {
       onTap: () async {
         final DateTime? new_date = await showDatePicker(
           context: context,
-          firstDate: DateTime(2023),
+          firstDate: currentDate.add(Duration(days: -365)),
           initialDate: currentDate,
-          lastDate: DateTime(2026)
+          lastDate: currentDate.add(Duration(days: 365)),
+
         );
 
         if(new_date != null){
@@ -82,6 +84,7 @@ class CenterButton extends ConsumerWidget {
     );
   }
 }
+
 
 class SideBotton extends ConsumerWidget {
   const SideBotton({super.key, required this.width, required this.icon, required this.mode});
