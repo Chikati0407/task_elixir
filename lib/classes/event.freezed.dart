@@ -25,9 +25,10 @@ mixin _$Event {
   String get summary => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
-  String get ColorId => throw _privateConstructorUsedError;
+  String get ColorId => throw _privateConstructorUsedError; //TODO 数字に対応した色を作成
   DateTime get startTime => throw _privateConstructorUsedError;
   DateTime get endTime => throw _privateConstructorUsedError;
+  List<Task> get tasks => throw _privateConstructorUsedError;
 
   /// Serializes this Event to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -51,7 +52,8 @@ abstract class $EventCopyWith<$Res> {
       String location,
       String ColorId,
       DateTime startTime,
-      DateTime endTime});
+      DateTime endTime,
+      List<Task> tasks});
 }
 
 /// @nodoc
@@ -77,6 +79,7 @@ class _$EventCopyWithImpl<$Res, $Val extends Event>
     Object? ColorId = null,
     Object? startTime = null,
     Object? endTime = null,
+    Object? tasks = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -111,6 +114,10 @@ class _$EventCopyWithImpl<$Res, $Val extends Event>
           ? _value.endTime
           : endTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      tasks: null == tasks
+          ? _value.tasks
+          : tasks // ignore: cast_nullable_to_non_nullable
+              as List<Task>,
     ) as $Val);
   }
 }
@@ -130,7 +137,8 @@ abstract class _$$EventImplCopyWith<$Res> implements $EventCopyWith<$Res> {
       String location,
       String ColorId,
       DateTime startTime,
-      DateTime endTime});
+      DateTime endTime,
+      List<Task> tasks});
 }
 
 /// @nodoc
@@ -154,6 +162,7 @@ class __$$EventImplCopyWithImpl<$Res>
     Object? ColorId = null,
     Object? startTime = null,
     Object? endTime = null,
+    Object? tasks = null,
   }) {
     return _then(_$EventImpl(
       id: null == id
@@ -188,6 +197,10 @@ class __$$EventImplCopyWithImpl<$Res>
           ? _value.endTime
           : endTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      tasks: null == tasks
+          ? _value._tasks
+          : tasks // ignore: cast_nullable_to_non_nullable
+              as List<Task>,
     ));
   }
 }
@@ -203,7 +216,9 @@ class _$EventImpl implements _Event {
       required this.location,
       required this.ColorId,
       required this.startTime,
-      required this.endTime});
+      required this.endTime,
+      required final List<Task> tasks})
+      : _tasks = tasks;
 
   factory _$EventImpl.fromJson(Map<String, dynamic> json) =>
       _$$EventImplFromJson(json);
@@ -220,14 +235,22 @@ class _$EventImpl implements _Event {
   final String location;
   @override
   final String ColorId;
+//TODO 数字に対応した色を作成
   @override
   final DateTime startTime;
   @override
   final DateTime endTime;
+  final List<Task> _tasks;
+  @override
+  List<Task> get tasks {
+    if (_tasks is EqualUnmodifiableListView) return _tasks;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_tasks);
+  }
 
   @override
   String toString() {
-    return 'Event(id: $id, htmlLink: $htmlLink, summary: $summary, description: $description, location: $location, ColorId: $ColorId, startTime: $startTime, endTime: $endTime)';
+    return 'Event(id: $id, htmlLink: $htmlLink, summary: $summary, description: $description, location: $location, ColorId: $ColorId, startTime: $startTime, endTime: $endTime, tasks: $tasks)';
   }
 
   @override
@@ -246,13 +269,23 @@ class _$EventImpl implements _Event {
             (identical(other.ColorId, ColorId) || other.ColorId == ColorId) &&
             (identical(other.startTime, startTime) ||
                 other.startTime == startTime) &&
-            (identical(other.endTime, endTime) || other.endTime == endTime));
+            (identical(other.endTime, endTime) || other.endTime == endTime) &&
+            const DeepCollectionEquality().equals(other._tasks, _tasks));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, htmlLink, summary,
-      description, location, ColorId, startTime, endTime);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      htmlLink,
+      summary,
+      description,
+      location,
+      ColorId,
+      startTime,
+      endTime,
+      const DeepCollectionEquality().hash(_tasks));
 
   /// Create a copy of Event
   /// with the given fields replaced by the non-null parameter values.
@@ -279,7 +312,8 @@ abstract class _Event implements Event {
       required final String location,
       required final String ColorId,
       required final DateTime startTime,
-      required final DateTime endTime}) = _$EventImpl;
+      required final DateTime endTime,
+      required final List<Task> tasks}) = _$EventImpl;
 
   factory _Event.fromJson(Map<String, dynamic> json) = _$EventImpl.fromJson;
 
@@ -294,11 +328,13 @@ abstract class _Event implements Event {
   @override
   String get location;
   @override
-  String get ColorId;
+  String get ColorId; //TODO 数字に対応した色を作成
   @override
   DateTime get startTime;
   @override
   DateTime get endTime;
+  @override
+  List<Task> get tasks;
 
   /// Create a copy of Event
   /// with the given fields replaced by the non-null parameter values.

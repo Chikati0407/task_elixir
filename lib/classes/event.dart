@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:task_elixir/classes/task.dart';
 
 part 'event.freezed.dart';
 part 'event.g.dart';
@@ -14,6 +15,7 @@ class Event with _$Event {
     required String ColorId,  //TODO 数字に対応した色を作成
     required DateTime startTime,
     required DateTime endTime,
+    required List<Task> tasks,
     // required List<Attachment> attachments,
   }) = _Event;
 
