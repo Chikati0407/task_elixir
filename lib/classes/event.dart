@@ -23,20 +23,24 @@ class Event with _$Event {
   => _$EventFromJson(json);
 }
 
-/* TODO 色対応をしておく
-0 カレンダーの色
-1 ラベンダー  #7986CB rgb(121, 134, 203)
-2 セージ     #33B679 rgb(51, 182, 121)
-3 ブドウ     #8E24AA rgb(142, 36, 170)
-4 フラミンゴ  #E67C73 rgb(230, 124, 115)
-5 バナナ     #F6BF26 rgb(246, 191, 38)
-6 ミカン     #F4511E rgb(244, 81, 30)
-7 ピーコック  #039BE5 rgb(3, 155, 229)
-8 グラファイト #616161 rgb(97, 97, 97)
-9 ブルーベリー #3F51B5 rgb(63, 81, 181)
-10 バジル     #0B8043 rgb(11, 128, 67)
-11 トマト     #D50000 rgb(213, 0, 0)
-*/
+pickEventColor(String colorId) {
+  const Map<String, int> color_map = {
+    "undefined": 0xFF000000, // 色指定なし
+    "1": 0xFF7986CB,         // ラベンダー
+    "2": 0xFF33B679,         // セージ
+    "3": 0xFF8E24AA,         // ブドウ
+    "4": 0xFFE67C73,         // フラミンゴ
+    "5": 0xFFF6BF26,         // バナナ
+    "6": 0xFFF4511E,         // ミカン
+    "7": 0xFF039BE5,         // ピーコック
+    "8": 0xFF616161,         // グラファイト
+    "9": 0xFF3F51B5,         // ブルーベリー
+    "10": 0xFF0B8043,        // バジル
+    "11": 0xFFD50000,        // トマト
+  };
+
+  return color_map[colorId];
+}
 
 
 // @freezed
