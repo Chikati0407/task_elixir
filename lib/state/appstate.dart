@@ -17,7 +17,7 @@ final eventsProvider = FutureProvider((ref){
         summary: 'Meeting',
         description: 'Project meeting',
         location: 'Conference Room',
-        ColorId: '1',
+        ColorId: '8',
         startTime: DateTime.now(),
         endTime: DateTime.now().add(Duration(hours: 1)),
         tasks: [

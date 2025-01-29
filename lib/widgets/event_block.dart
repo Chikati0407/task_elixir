@@ -16,6 +16,9 @@ class _EventBlockState extends ConsumerState<EventBlock> {
 
   final Event event;
   bool openState = true;
+  CarouselController controller = CarouselController(
+    initialItem: 0,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +30,22 @@ class _EventBlockState extends ConsumerState<EventBlock> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "どう？どう？どう？",
-          maxLines: openState ? 100 : 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 24,color: mainColor,fontWeight: FontWeight.bold),
+        Expanded(
+          child: Text(
+            event.summary,
+            maxLines: openState ? 2 : 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 24,color: mainColor,fontWeight: FontWeight.bold),
+          ),
         ),
+        SizedBox(width: 8,),
         IconButton(
           onPressed: (){
             setState(() {
               openState = !(openState);
             });
           },
-          icon: Icon(Icons.arrow_drop_down),
+          icon: Icon(openState ? Icons.arrow_drop_up : Icons.arrow_drop_down),
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(backgroundColor)
           ),
@@ -53,9 +59,19 @@ class _EventBlockState extends ConsumerState<EventBlock> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("${event.startTime.hour}:${event.startTime.minute}"),
+          Text(
+            "${event.startTime.hour.toString().padLeft(2,"0")} : ${event.startTime.minute.toString().padLeft(2,"0")}",
+            style: TextStyle(
+              fontSize: 16
+            ),
+          ),
           Icon(Icons.arrow_forward),
-          Text("${event.endTime.hour}:${event.endTime.minute}"),
+          Text(
+            "${event.endTime.hour.toString().padLeft(2,"0")} : ${event.endTime.minute.toString().padLeft(2,"0")}",
+            style: TextStyle(
+                fontSize: 16
+            ),
+          ),
         ],
       ),
     );
@@ -82,11 +98,19 @@ class _EventBlockState extends ConsumerState<EventBlock> {
       height: 300,
       width: double.infinity,
       child: CarouselView.weighted(
-        flexWeights: [1,10,1],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        backgroundColor: backgroundColor,
+        enableSplash: false,
+        controller: controller,
+        flexWeights: [1],
+        consumeMaxWeight: true,
         children: [
-          Container(),
-          Container(),
-      ]),
+          eventBlockDescriptionBox(event: event, backgroundColor: backgroundColor, mode: "description"),
+          eventBlockDescriptionBox(event: event, backgroundColor: backgroundColor, mode: "task"),
+        ]
+      ),
     );
 
     final openToggle = InkWell(
@@ -137,3 +161,135 @@ class _EventBlockState extends ConsumerState<EventBlock> {
   }
 }
 
+
+class eventBlockDescriptionBox extends ConsumerWidget {
+  const eventBlockDescriptionBox({super.key, required this.event, required this.backgroundColor, required this.mode});
+
+  final Event event;
+  final Color backgroundColor;
+  final String mode; //task or description
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
+        children: [
+          Text(
+            (mode == "task") ? "未完のタスク" : "詳細",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: backgroundColor.withAlpha(0xff),
+            ),
+          ),
+          Expanded(
+            child: (mode == "task")
+              ? ListView.separated(
+                separatorBuilder: (context, index){
+                  return SizedBox(height: 8,);
+                },
+                itemCount: event.tasks.length,
+                itemBuilder: (context, index){
+                  return eventBlockDescriptionBoxTask(backgroundColor: backgroundColor);
+                },
+              )
+              : ListView(
+                children: [
+                  eventBlockDescriptionBoxDetail(icon: Icons.description, text: event.description, backgroundColor: backgroundColor),
+                  SizedBox(height: 8,),
+                  eventBlockDescriptionBoxDetail(icon: Icons.map, text: event.location, backgroundColor: backgroundColor),
+                  SizedBox(height: 8,),
+                  eventBlockDescriptionBoxDetail(icon: Icons.link, text: "外部アプリで開く", backgroundColor: backgroundColor.withAlpha(0x90), link: event.htmlLink,),
+                ],
+              ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class eventBlockDescriptionBoxTask extends ConsumerWidget {
+  const eventBlockDescriptionBoxTask({super.key, required this.backgroundColor});
+
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: backgroundColor,
+      ),
+      padding: EdgeInsets.all(4),
+      height: 60,
+      child: Row(
+        children: [
+
+        ],
+      ),
+    );
+  }
+}
+
+class eventBlockDescriptionBoxDetail extends ConsumerWidget {
+  const eventBlockDescriptionBoxDetail({super.key, required this.icon, required this.text, required this.backgroundColor, this.link});
+
+  final IconData icon;
+  final String text;
+  final Color backgroundColor;
+  final String? link;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(4),
+      onTap: () async {
+        if (link != null){
+          // await launchUrl(
+          //     Uri.parse(link!),
+          //     mode: LaunchMode.platformDefault,
+          //     webOnlyWindowName: "_blank"
+          // );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("URLに遷移するはず")));
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: backgroundColor,
+        ),
+        padding: EdgeInsets.all(4),
+        height: 48,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(width: 8,),
+            Icon(
+              icon
+            ),
+            SizedBox(width: 8,),
+            Expanded(
+              child: Tooltip(
+                message: text,
+                child: Text(
+                  text,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 16
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
