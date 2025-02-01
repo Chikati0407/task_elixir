@@ -52,6 +52,7 @@ final eventsProvider = FutureProvider((ref){
 
         ]
       ),
+      0,
     ]
   );
 });

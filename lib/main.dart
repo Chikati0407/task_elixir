@@ -6,8 +6,6 @@ import 'route.dart';
 
 void main(){
 
-
-
   runApp(
     ProviderScope(child: MyApp())
   );
