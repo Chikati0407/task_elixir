@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_elixir/classes/event.dart';
+import 'package:task_elixir/classes/task.dart';
 
 class EventBlock extends ConsumerStatefulWidget {
   const EventBlock({super.key, required this.event});
@@ -8,14 +9,12 @@ class EventBlock extends ConsumerStatefulWidget {
   final Event event;
 
   @override
-  ConsumerState createState() => _EventBlockState(event: event);
+  ConsumerState createState() => _EventBlockState();
 }
 
 class _EventBlockState extends ConsumerState<EventBlock> {
-  _EventBlockState({required this.event});
 
-  final Event event;
-  bool openState = true;
+  bool openState = false;
   CarouselController controller = CarouselController(
     initialItem: 0,
   );
@@ -23,7 +22,7 @@ class _EventBlockState extends ConsumerState<EventBlock> {
   @override
   Widget build(BuildContext context) {
 
-    final Color mainColor = Color(pickEventColor(event.ColorId));
+    final Color mainColor = Color(pickEventColor(widget.event.ColorId));
     final backgroundColor = mainColor.withAlpha(0x40);
 
     final titleBlock = Row(
@@ -32,7 +31,7 @@ class _EventBlockState extends ConsumerState<EventBlock> {
       children: [
         Expanded(
           child: Text(
-            event.summary,
+            widget.event.summary,
             maxLines: openState ? 2 : 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 24,color: mainColor,fontWeight: FontWeight.bold),
@@ -60,14 +59,14 @@ class _EventBlockState extends ConsumerState<EventBlock> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "${event.startTime.hour.toString().padLeft(2,"0")} : ${event.startTime.minute.toString().padLeft(2,"0")}",
+            "${widget.event.startTime.hour.toString().padLeft(2,"0")} : ${widget.event.startTime.minute.toString().padLeft(2,"0")}",
             style: TextStyle(
               fontSize: 16
             ),
           ),
           Icon(Icons.arrow_forward),
           Text(
-            "${event.endTime.hour.toString().padLeft(2,"0")} : ${event.endTime.minute.toString().padLeft(2,"0")}",
+            "${widget.event.endTime.hour.toString().padLeft(2,"0")} : ${widget.event.endTime.minute.toString().padLeft(2,"0")}",
             style: TextStyle(
                 fontSize: 16
             ),
@@ -106,9 +105,10 @@ class _EventBlockState extends ConsumerState<EventBlock> {
         controller: controller,
         flexWeights: [1],
         consumeMaxWeight: true,
+        itemSnapping: true,
         children: [
-          eventBlockDescriptionBox(event: event, backgroundColor: backgroundColor, mode: "description"),
-          eventBlockDescriptionBox(event: event, backgroundColor: backgroundColor, mode: "task"),
+          eventBlockDescriptionBox(event: widget.event, backgroundColor: backgroundColor, mode: "description"),
+          eventBlockDescriptionBox(event: widget.event, backgroundColor: backgroundColor, mode: "task"),
         ]
       ),
     );
@@ -144,14 +144,14 @@ class _EventBlockState extends ConsumerState<EventBlock> {
         borderRadius: BorderRadius.circular(20),
       ),
       padding: EdgeInsets.all(16),
-      height: openState ? 500 : (event.tasks.isNotEmpty ? 230 : 180),
+      height: openState ? 500 : (widget.event.tasks.isNotEmpty ? 230 : 180),
       duration: Duration(milliseconds: 500),
       curve: Curves.easeOutExpo,
       child: Column(
         children: [
           titleBlock,
           timeIndicator,
-          openState ? openBody : (event.tasks.isNotEmpty ? closeBody : Container()),
+          openState ? openBody : (widget.event.tasks.isNotEmpty ? closeBody : SizedBox()),
           Spacer(),
           openToggle
         ],
@@ -194,7 +194,7 @@ class eventBlockDescriptionBox extends ConsumerWidget {
                 },
                 itemCount: event.tasks.length,
                 itemBuilder: (context, index){
-                  return eventBlockDescriptionBoxTask(backgroundColor: backgroundColor);
+                  return eventBlockDescriptionBoxTask(task: event.tasks[index],backgroundColor: backgroundColor);
                 },
               )
               : ListView(
@@ -213,23 +213,54 @@ class eventBlockDescriptionBox extends ConsumerWidget {
   }
 }
 
-class eventBlockDescriptionBoxTask extends ConsumerWidget {
-  const eventBlockDescriptionBoxTask({super.key, required this.backgroundColor});
+class eventBlockDescriptionBoxTask extends ConsumerStatefulWidget {
+  const eventBlockDescriptionBoxTask({super.key, required this.backgroundColor, required this.task});
 
   final Color backgroundColor;
+  final Task task;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState createState() => _EventBlockDescriptionBoxTaskState();
+}
+
+class _EventBlockDescriptionBoxTaskState extends ConsumerState<eventBlockDescriptionBoxTask> {
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    const getStatus = {
+      "needsAction" : false,
+      "completed" : true,
+    };
+
+    const Map<bool, String> changeStatus = {
+      false : "needsAction",
+      true : "completed",
+    };
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        color: backgroundColor,
+        color: widget.backgroundColor,
       ),
-      padding: EdgeInsets.all(4),
-      height: 60,
+      padding: EdgeInsets.all(8),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
+          Checkbox(
+            value: getStatus[widget.task.status],
+            onChanged:(value){
+              setState(() {
+                widget.task = widget.task.copyWith(status: changeStatus[value]!);
+              });
+            },
+          ),
+          SizedBox(width: 8,),
+          Expanded(
+            child: Text(""),
+          ),
         ],
       ),
     );
