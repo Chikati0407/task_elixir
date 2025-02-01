@@ -25,7 +25,7 @@ mixin _$Event {
   String get summary => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
-  String get ColorId => throw _privateConstructorUsedError; //TODO 数字に対応した色を作成
+  String get ColorId => throw _privateConstructorUsedError;
   DateTime get startTime => throw _privateConstructorUsedError;
   DateTime get endTime => throw _privateConstructorUsedError;
   List<Task> get tasks => throw _privateConstructorUsedError;
@@ -235,7 +235,6 @@ class _$EventImpl implements _Event {
   final String location;
   @override
   final String ColorId;
-//TODO 数字に対応した色を作成
   @override
   final DateTime startTime;
   @override
@@ -328,7 +327,7 @@ abstract class _Event implements Event {
   @override
   String get location;
   @override
-  String get ColorId; //TODO 数字に対応した色を作成
+  String get ColorId;
   @override
   DateTime get startTime;
   @override

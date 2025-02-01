@@ -12,7 +12,7 @@ class Event with _$Event {
     required String summary,
     required String description,
     required String location,
-    required String ColorId,  //TODO 数字に対応した色を作成
+    required String ColorId,
     required DateTime startTime,
     required DateTime endTime,
     required List<Task> tasks,
@@ -24,7 +24,7 @@ class Event with _$Event {
 }
 
 pickEventColor(String colorId) {
-  const Map<String, int> color_map = {
+  const Map<String, int> colorMap = {
     "undefined": 0xFF000000, // 色指定なし
     "1": 0xFF7986CB,         // ラベンダー
     "2": 0xFF33B679,         // セージ
@@ -39,7 +39,7 @@ pickEventColor(String colorId) {
     "11": 0xFFD50000,        // トマト
   };
 
-  return color_map[colorId];
+  return colorMap[colorId];
 }
 
 
